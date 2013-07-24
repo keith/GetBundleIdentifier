@@ -70,7 +70,7 @@
 }
 
 - (void)startMonitoring {
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(printCurrentApplication) userInfo:nil repeats:true];
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(printCurrentApplication) userInfo:nil repeats:true];
 }
 
 - (void)stopMonitoring {
