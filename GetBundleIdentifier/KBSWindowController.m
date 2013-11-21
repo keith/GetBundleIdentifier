@@ -22,7 +22,7 @@
     if (!self) {
         return nil;
     }
-    
+
     return self;
 }
 
@@ -32,7 +32,7 @@
     [self.window setLevel:NSFloatingWindowLevel];
     NSView *contentView = [[NSView alloc] initWithFrame:self.window.frame];
     [self.window setContentView:contentView];
-    
+
     self.textView = [[NSTextView alloc] init];
     [self.textView setTranslatesAutoresizingMaskIntoConstraints:false];
     [self.textView setTextContainerInset:NSMakeSize(2, 5)];
@@ -40,7 +40,7 @@
     [self.textView setEditable:false];
     [self.textView setSelectable:true];
     [self.textView setHorizontallyResizable:true];
-    
+
     NSScrollView *scrollView = [[NSScrollView alloc] init];
     [scrollView setTranslatesAutoresizingMaskIntoConstraints:false];
     [scrollView setBorderType:NSBezelBorder];
@@ -48,15 +48,15 @@
     [scrollView setHasHorizontalScroller:false];
     [scrollView setAutohidesScrollers:true];
     [scrollView setDocumentView:self.textView];
-    
+
     [contentView addSubview:scrollView];
-    
+
     NSDictionary *views = NSDictionaryOfVariableBindings(scrollView, _textView);
     [scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_textView]-|" options:kNilOptions metrics:nil views:views]];
     [scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[_textView]-|" options:kNilOptions metrics:nil views:views]];
     [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[scrollView]-|" options:kNilOptions metrics:nil views:views]];
     [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[scrollView]-|" options:kNilOptions metrics:nil views:views]];
-    
+
 //    [self.window visualizeConstraints:contentView.constraints];
 }
 
@@ -64,7 +64,7 @@
     if (!self.window) {
         [self loadWindow];
     }
-    
+
     [super showWindow:sender];
     [self startMonitoring];
 }
@@ -81,10 +81,12 @@
 - (void)printCurrentApplication {
     NSString *identifier = [[[NSWorkspace sharedWorkspace] frontmostApplication] bundleIdentifier];
     NSString *currentText = [self.textView string];
-    NSString *newText = [currentText stringByAppendingFormat:@"%@\n", identifier];
-    
+    if ([currentText rangeOfString:identifier].location == NSNotFound) {
+        NSString *newText = [currentText stringByAppendingFormat:@"%@\n", identifier];
+        [self.textView setString:newText];
+    }
+
     NSLog(@"%@", identifier);
-    [self.textView setString:newText];
 }
 
 #pragma mark - NSWindowDelegate
